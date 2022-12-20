@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  serviceName: nginx
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        volumeMounts:
+        - name: nginx-data
+          mountPath: /var/www/html
+      volumes:
+      - name: nginx-data
+        persistentVolumeClaim:
+          claimName: nginx-data-claim
+  volumeClaimTemplates:
+  - metadata:
+      name: nginx-data-claim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+
+
+...
+kind: Service
+apiVersion: v1
+metadata:
+  name:  nginx_svc
+spec:
+  selector:
+    app:  nginx
+  type:  ClusterIP 
+  ports:
+   - port:  80
+     targetPort:  443
+
+

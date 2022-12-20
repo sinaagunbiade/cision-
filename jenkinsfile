@@ -1,0 +1,24 @@
+
+node{
+     
+    stage('SCM Checkout'){
+        git credentialsId: 'GIT_CREDENTIALS', url:  '${REPO_URL}',branch: 'master'
+    }
+    
+    stage('Build Docker Image'){
+        sh 'docker build -t nginx/nginx:${IMAGE_TAG} .'
+    }
+    
+    stage('Push Docker Image'){
+        withCredentials([string(credentialsId: 'DOOCKER_REG_PASSWORD', variable: 'DOCKER_REG_PASSWORD')]) {
+          sh "docker login -u ${DOCKER_REGISTRY} -p ${DOKCER_REG_PASSWORD}"
+        }
+        sh 'docker push nginx/nginx:${IMAGE_TAG}'
+     }
+     
+      stage("Deploy To Kubernetes Cluster"){
+        sh 'kubectl apply -f nginx_statefulset.yaml'
+      } 
+     
+}
+
