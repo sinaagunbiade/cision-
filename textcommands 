@@ -1,0 +1,40 @@
+list.txt
+samuel
+sharon 
+emmanuel
+blesing
+
+#i, replace sharon with blessing
+sed 's/sharon/blessing/g' list.txt  
+
+#output:
+samuel
+blessing 
+emmanuel
+blesing
+
+#ii, marks.txt
+awk '{print $2 "\t" $3}' marks.txt
+
+ Amit     Physics   80
+ Rahul    Maths     90
+ Shyam    Biology   87
+ Kedar    English   85
+ Hari     History   89
+
+#output:
+Physics 80
+Maths   90
+Biology 87
+English 85
+History 89
+#iii, convert list.txt to upper case
+ 
+ cat list.txt | tr a-z A-Z 
+ #output:
+SAMUEL
+SHARON 
+EMMANUEL
+BLESING
+
+
